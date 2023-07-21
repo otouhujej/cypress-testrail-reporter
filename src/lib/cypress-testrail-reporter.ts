@@ -87,7 +87,7 @@ export class CypressTestRailReporter extends reporters.Spec {
               TestRailLogger.log(`Following suiteId has been set in cypress.json file: ${this.suiteId}`);
             }
             const executionDateTime = moment().format('MMM Do YYYY, HH:mm (Z)');
-            const name = `${this.reporterOptions.runName || 'Automated test run'} ${executionDateTime}`;
+            const name = this.reporterOptions.runName || `Automated test run ${executionDateTime}`;
             if (this.reporterOptions.disableDescription) {
               var description = '';
             } else {
@@ -120,7 +120,7 @@ export class CypressTestRailReporter extends reporters.Spec {
 
       runner.on('end', () => {
         /**
-         * When we reach final number of spec files 
+         * When we reach final number of spec files
          * we should close test run at the end
          */
         var numSpecFiles = this.testRailValidation.countTestSpecFiles();
@@ -153,7 +153,7 @@ export class CypressTestRailReporter extends reporters.Spec {
 
   /**
    * Ensure that after each test results are reported continuously
-   * Additionally to that if test status is failed or retried there is possibility 
+   * Additionally to that if test status is failed or retried there is possibility
    * to upload failed screenshot for easier debugging in TestRail
    * Note: Uploading of screenshot is configurable option
    */
