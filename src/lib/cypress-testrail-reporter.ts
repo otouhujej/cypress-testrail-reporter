@@ -36,7 +36,7 @@ export class CypressTestRailReporter extends reporters.Spec {
     }
 
     if (process.env.CYPRESS_TESTRAIL_REPORTER_GROUPID) {
-      this.reporterOptions.runName = process.env.CYPRESS_TESTRAIL_REPORTER_GROUPID;
+      this.reporterOptions.groupId = process.env.CYPRESS_TESTRAIL_REPORTER_GROUPID;
     }
 
     if (process.env.CYPRESS_TESTRAIL_REPORTER_REFS) {
