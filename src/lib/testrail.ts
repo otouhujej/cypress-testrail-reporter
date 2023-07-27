@@ -49,14 +49,16 @@ export class TestRail {
       axios({
         method:'get',
         url: url,
-        headers: { 'Content-Type': 'application/json' }, 
+        headers: { 'Content-Type': 'application/json' },
         auth: {
             username: this.options.username,
             password: this.options.password
-        } 
+        }
       })
       .then(response => {
-        return response.data.cases.map(item =>item.id)
+        return response.data.cases
+          .filter(item => !this.options.automationStatus || item.custom_automation_status === this.options.automationStatus)
+          .map(item => item.id)
       })
       .catch(error => console.error(error))
     )
@@ -123,8 +125,8 @@ export class TestRail {
         data: JSON.stringify({ results }),
       })
       .then(response => response.data)
-      .catch(error => { 
-        console.error(error); 
+      .catch(error => {
+        console.error(error);
       })
     )
   }
@@ -154,7 +156,7 @@ export class TestRail {
     fs.readdir(SCREENSHOTS_FOLDER_PATH, (err, files) => {
       if (err) {
         return console.log('Unable to scan screenshots folder: ' + err);
-      } 
+      }
 
       files.forEach(file => {
         if (file.includes(`C${caseId}`) && /(failed|attempt)/g.test(file)) {
