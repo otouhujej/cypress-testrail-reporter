@@ -25,7 +25,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -60,7 +60,7 @@ var TestRail = /** @class */ (function () {
         this.options = options;
         this.includeAll = true;
         this.caseIds = [];
-        this.base = options.host + "/index.php?/api/v2";
+        this.base = "".concat(options.host, "/index.php?/api/v2");
         this.runId;
     }
     /**
@@ -84,15 +84,16 @@ var TestRail = /** @class */ (function () {
         return result;
     };
     TestRail.prototype.getCases = function (suiteId) {
-        var url = this.base + "/get_cases/" + this.options.projectId + "&suite_id=" + suiteId;
+        var _this = this;
+        var url = "".concat(this.base, "/get_cases/").concat(this.options.projectId, "&suite_id=").concat(suiteId);
         if (this.options.groupId) {
-            url += "&section_id=" + this.options.groupId;
+            url += "&section_id=".concat(this.options.groupId);
         }
         if (this.options.filter) {
-            url += "&filter=" + this.options.filter;
+            url += "&filter=".concat(this.options.filter);
         }
         if (this.options.typeId) {
-            url += "&type_id=" + this.options.typeId;
+            url += "&type_id=".concat(this.options.typeId);
         }
         return this.makeSync(axios({
             method: 'get',
@@ -104,7 +105,9 @@ var TestRail = /** @class */ (function () {
             }
         })
             .then(function (response) {
-            return response.data.cases.map(function (item) { return item.id; });
+            return response.data.cases
+                .filter(function (item) { return !_this.options.automationStatus || item.custom_automation_status === _this.options.automationStatus; })
+                .map(function (item) { return item.id; });
         })
             .catch(function (error) { return console.error(error); }));
     };
@@ -116,7 +119,7 @@ var TestRail = /** @class */ (function () {
         }
         this.makeSync(axios({
             method: 'post',
-            url: this.base + "/add_run/" + this.options.projectId,
+            url: "".concat(this.base, "/add_run/").concat(this.options.projectId),
             headers: { 'Content-Type': 'application/json' },
             auth: {
                 username: this.options.username,
@@ -142,7 +145,7 @@ var TestRail = /** @class */ (function () {
         this.runId = TestRailCache.retrieve('runId');
         this.makeSync(axios({
             method: 'post',
-            url: this.base + "/delete_run/" + this.runId,
+            url: "".concat(this.base, "/delete_run/").concat(this.runId),
             headers: { 'Content-Type': 'application/json' },
             auth: {
                 username: this.options.username,
@@ -154,7 +157,7 @@ var TestRail = /** @class */ (function () {
         this.runId = TestRailCache.retrieve('runId');
         return this.makeSync(axios({
             method: 'post',
-            url: this.base + "/add_results_for_cases/" + this.runId,
+            url: "".concat(this.base, "/add_results_for_cases/").concat(this.runId),
             headers: { 'Content-Type': 'application/json' },
             auth: {
                 username: this.options.username,
@@ -172,7 +175,7 @@ var TestRail = /** @class */ (function () {
         form.append('attachment', fs.createReadStream(path));
         this.makeSync(axios({
             method: 'post',
-            url: this.base + "/add_attachment_to_result/" + resultId,
+            url: "".concat(this.base, "/add_attachment_to_result/").concat(resultId),
             headers: __assign({}, form.getHeaders()),
             auth: {
                 username: this.options.username,
@@ -190,7 +193,7 @@ var TestRail = /** @class */ (function () {
                 return console.log('Unable to scan screenshots folder: ' + err);
             }
             files.forEach(function (file) {
-                if (file.includes("C" + caseId) && /(failed|attempt)/g.test(file)) {
+                if (file.includes("C".concat(caseId)) && /(failed|attempt)/g.test(file)) {
                     try {
                         _this.uploadAttachment(resultId, SCREENSHOTS_FOLDER_PATH + file);
                     }
@@ -206,7 +209,7 @@ var TestRail = /** @class */ (function () {
         this.runId = TestRailCache.retrieve('runId');
         this.makeSync(axios({
             method: 'post',
-            url: this.base + "/close_run/" + this.runId,
+            url: "".concat(this.base, "/close_run/").concat(this.runId),
             headers: { 'Content-Type': 'application/json' },
             auth: {
                 username: this.options.username,
